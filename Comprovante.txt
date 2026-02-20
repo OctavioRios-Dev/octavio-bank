@@ -1,0 +1,4 @@
+=== COMPROVANTE DE TRANSFERENCIA ===
+Origem: Octavio | Destino: Amigo
+Valor: R$99.0
+Saldo final Octavio: R$1.0
