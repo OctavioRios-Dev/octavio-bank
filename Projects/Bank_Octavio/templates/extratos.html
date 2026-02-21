@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Extrato - {{ nome }}</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; display: flex; flex-direction: column; align-items: center; padding-top: 50px; }
+        /* Aumentei um pouco a largura para caber a data confortavelmente */
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 400px; }
+        h2 { color: #1a73e8; border-bottom: 2px solid #eee; padding-bottom: 10px; text-align: center; }
+        ul { list-style: none; padding: 0; }
+        li { padding: 12px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .valor { color: #0f5132; font-weight: bold; }
+        .data { color: #666; font-size: 0.85em; font-weight: normal; }
+        .voltar { display: block; margin-top: 20px; text-decoration: none; color: #1a73e8; font-weight: bold; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>📄 Extrato: {{ nome }}</h2>
+        <ul>
+            {% for mov in movimentacoes %}
+    <li>
+        <span class="valor">+ R$ {{ "{:,.2f}".format(mov[0]).replace('.', ',') }}</span>
+    </li>
+            {% endfor %}
+        </ul>
+        <a href="/" class="voltar">⬅ Voltar ao Início</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Octavio Bank</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="header-acoes"><a href="/logout" class="btn-sair">🚪 SAIR</a></div>
+    <h1>🏦 Octavio Bank - Relatório de Saldos</h1>
+
+    <div class="container-form">
+        <h3>👤 Novo Cliente</h3>
+        <form action="/cadastrar" method="POST">
+            <input type="text" name="nome_cliente" placeholder="Nome" required>
+            <button type="submit">Cadastrar</button>
+        </form>
+    </div>
+
+    <div class="container-form">
+        <h3>💰 Depósito</h3>
+        <form id="form-deposito">
+            <input type="text" name="nome_cliente" placeholder="Nome" required>
+            <input type="number" step="0.01" name="valor_operacao" placeholder="Valor" required>
+            <button type="submit">Depositar</button>
+        </form>
+    </div>
+
+    <div class="container-form">
+        <h3>💸 Saque</h3>
+        <form id="form-saque">
+            <input type="text" name="nome_cliente" placeholder="Nome" required>
+            <input type="number" step="0.01" name="valor_operacao" placeholder="Valor" required>
+            <button type="submit" style="background-color: #d93025;">Sacar</button>
+        </form>
+    </div>
+
+    <div class="container-form">
+        <h3 style="color: #d93025;">🗑️ Excluir Cliente</h3>
+        <form action="/excluir" method="POST">
+            <input type="text" name="nome_cliente" placeholder="Nome exato" required>
+            <button type="submit" style="background-color: #d93025;">Excluir Permanentemente</button>
+        </form>
+    </div>
+
+    <table>
+        <thead><tr><th>Cliente</th><th>Saldo Total</th></tr></thead>
+        <tbody>
+            {% for row in saldos %}
+            <tr>
+                <td class="nome-col">{{ row['nome'] }}</td>
+                <td class="saldo-col">R$ {{ "{:,.2f}".format(row['total_saldo']).replace('.', 'v').replace(',', '.').replace('v', ',') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</body>
+</html>

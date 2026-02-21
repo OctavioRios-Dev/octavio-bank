@@ -1,0 +1,111 @@
+/* CONFIGURAÇÕES GERAIS - 100% DARK */
+body { 
+    font-family: 'Segoe UI', sans-serif; 
+    background-color: #121212; 
+    color: #e0e0e0; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    margin: 0; 
+    padding-bottom: 50px; 
+}
+
+h1 { color: #4dadff; margin-top: 20px; }
+
+/* CONTAINERS DE FORMULÁRIO (DEPÓSITO/EXCLUIR) */
+.container-form { 
+    background-color: #1e1e1e; 
+    color: white; 
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.5); 
+    border-radius: 8px;
+    width: 90%;          /* Ocupa 90% da largura disponível */
+    max-width: 600px;    /* Mas não passa de 600px */
+    text-align: center;
+}
+
+/* ESTILO DA TABELA DE SALDOS */
+table { 
+    background-color: #1e1e1e; 
+    color: white; 
+    width: 90%;          /* Mesma largura dos formulários */
+    max-width: 800px;    /* Tabelas podem ser um pouco mais largas */
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;    /* Garante que os cantos fiquem arredondados */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.5); 
+}
+
+th { background-color: #1a73e8; color: white; padding: 15px; text-align: left; }
+td { padding: 15px; border-bottom: 1px solid #333; }
+
+/* INPUTS E BOTÕES */
+input { 
+    background-color: #2c2c2c; 
+    border: 1px solid #444; 
+    color: white; 
+    padding: 10px;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+tr:hover { background-color: #252525; }
+
+/* CABEÇALHO (BOTÃO SAIR) */
+.header-acoes {
+    width: 90%;
+    max-width: 800px;
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px 0;
+}
+
+/* CORES DOS SALDOS */
+.saldo-positivo {
+    font-weight: bold;
+    /* A cor será controlada pelo JS para ser dinâmica */
+}
+
+/* BOTÃO SAIR PREMIUM */
+.btn-sair {
+    background-color: rgba(217, 48, 37, 0.2); /* Fundo avermelhado sutil */
+    color: #ff4d4d;
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    border: 1px solid #d93025;
+    transition: 0.3s;
+    font-size: 13px;
+}
+
+.btn-sair:hover {
+    background-color: #d93025;
+    color: white;
+    box-shadow: 0 0 12px rgba(217, 48, 37, 0.5);
+}
+
+/* NOTIFICAÇÃO TOAST ESTILIZADA */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #1e1e1e;
+    color: #4dadff;
+    padding: 15px 25px;
+    border-radius: 8px;
+    border-left: 5px solid #1a73e8;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    z-index: 1000;
+    transition: opacity 0.5s ease;
+}
