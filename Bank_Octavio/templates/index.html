@@ -44,12 +44,20 @@
     </div>
 
     <table>
-        <thead><tr><th>Cliente</th><th>Saldo Total</th></tr></thead>
+        <thead>
+            <tr>
+                <th>Cliente</th>
+                <th>Saldo Total</th>
+                <th>Ações</th> </tr>
+        </thead>
         <tbody>
             {% for row in saldos %}
             <tr>
                 <td class="nome-col">{{ row['nome'] }}</td>
                 <td class="saldo-col">R$ {{ "{:,.2f}".format(row['total_saldo']).replace('.', 'v').replace(',', '.').replace('v', ',') }}</td>
+                <td>
+                    <a href="{{ url_for('extrato', nome=row['nome']) }}" class="btn-extrato" style="text-decoration: none; background-color: #1a73e8; color: white; padding: 5px 10px; border-radius: 4px; font-size: 12px;">📄 Ver Extrato</a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

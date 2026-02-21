@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Extrato - {{ nome }}</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background-color: #121212; /* Fundo escuro igual ao index */
+            color: #e0e0e0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding-top: 50px; 
+        }
+        .card { 
+            background: #1e1e1e; /* Cinza escuro para o card */
+            padding: 20px; 
+            border-radius: 12px; 
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5); 
+            width: 450px; 
+            border: 1px solid #333;
+        }
+        h2 { 
+            color: #4da3ff; /* Azul para combinar com o cabeçalho da sua tabela */
+            border-bottom: 2px solid #333; 
+            padding-bottom: 10px; 
+            text-align: center; 
+        }
+        ul { list-style: none; padding: 0; }
+        li { 
+            padding: 15px; 
+            border-bottom: 1px solid #2c2c2c; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: flex-start; 
+        }
+        .linha-superior { display: flex; justify-content: space-between; width: 100%; align-items: center; }
+        .valor { font-weight: bold; font-size: 1.1em; }
+        
+        /* Cores de destaque para o Dark Mode */
+        .deposito { color: #00e676; } /* Verde neon */
+        .saque { color: #ff5252; }    /* Vermelho vibrante */
+        
+        .data { color: #888; font-size: 0.8em; margin-top: 4px; }
+        .voltar { 
+            display: block; 
+            margin-top: 25px; 
+            text-decoration: none; 
+            color: #4da3ff; 
+            font-weight: bold; 
+            text-align: center; 
+            transition: 0.3s;
+        }
+        .voltar:hover { color: #82b1ff; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>📄 Extrato: {{ nome }}</h2>
+        <ul>
+            {% for mov in transacoes %}
+            <li>
+                <div class="linha-superior">
+                    <span class="tipo {{ 'deposito' if mov['tipo'] == 'Deposito' else 'saque' }}">
+                        {{ '💰' if mov['tipo'] == 'Deposito' else '💸' }} {{ mov['tipo'] }}
+                    </span>
+                    <span class="valor {{ 'deposito' if mov['tipo'] == 'Deposito' else 'saque' }}">
+                        {{ '+' if mov['tipo'] == 'Deposito' else '-' }} R$ {{ "{:,.2f}".format(mov['valor']).replace('.', 'v').replace(',', '.').replace('v', ',') }}
+                    </span>
+                </div>
+                <span class="data">🗓️ {{ mov['data'] }}</span>
+            </li>
+            {% endfor %}
+            {% if not transacoes %}
+                <p style="text-align: center; color: #888;">Nenhuma movimentação encontrada.</p>
+            {% endif %}
+        </ul>
+        <a href="/" class="voltar">⬅ Voltar ao Relatório</a>
+    </div>
+</body>
+</html>

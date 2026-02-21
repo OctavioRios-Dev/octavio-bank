@@ -56,12 +56,20 @@ def depositar():
     valor = request.form.get('valor_operacao')
     db = get_db()
     cliente = db.execute('SELECT id_cliente, nome FROM clientes WHERE UPPER(nome) = UPPER(?)', (nome,)).fetchone()
+    
     if cliente:
+        # 1. Registra o saldo na tabela contas
         db.execute('INSERT INTO contas (saldo, fk_cliente) VALUES (?, ?)', (valor, cliente['id_cliente']))
+        
+        # 2. NOVO: Registra no Histórico
+        db.execute('INSERT INTO historico (id_usuario, tipo, valor) VALUES (?, ?, ?)', 
+                   (cliente['id_cliente'], 'Deposito', valor))
+        
         db.commit()
         res = db.execute('SELECT total_saldo FROM vista_saldos_clientes WHERE UPPER(nome) = UPPER(?)', (nome,)).fetchone()
         db.close()
         return jsonify({'status': 'sucesso', 'nome': cliente['nome'], 'novo_saldo': res['total_saldo']})
+    
     db.close()
     return jsonify({'status': 'erro', 'mensagem': 'Cliente não encontrado'})
 
@@ -71,36 +79,28 @@ def sacar():
     try:
         nome = request.form.get('nome_cliente')
         valor_operacao = request.form.get('valor_operacao')
-        
-        if not nome or not valor_operacao:
-            return jsonify({'status': 'erro', 'mensagem': 'Campos vazios'})
-            
         valor_saque = float(valor_operacao)
         
         with db:
-            # 1. Busca o cliente na tabela clientes (onde id_cliente existe)
             cliente = db.execute('SELECT id_cliente, nome FROM clientes WHERE UPPER(nome) = UPPER(?)', (nome,)).fetchone()
             if not cliente:
                 return jsonify({'status': 'erro', 'mensagem': 'Cliente não encontrado'})
 
-            # 2. Busca o saldo atual na VIEW
             saldo_info = db.execute('SELECT total_saldo FROM vista_saldos_clientes WHERE UPPER(nome) = UPPER(?)', (nome,)).fetchone()
             saldo_atual = saldo_info['total_saldo'] if saldo_info else 0
 
-            # 3. Verificação de segurança antes de tentar inserir
             if saldo_atual < valor_saque:
-                return jsonify({'status': 'erro', 'mensagem': f'Saldo insuficiente (R$ {saldo_atual:.2f})'})
+                return jsonify({'status': 'erro', 'mensagem': f'Saldo insuficiente'})
 
-            # 4. Tenta inserir o valor negativo (saque)
-            try:
-                db.execute('INSERT INTO contas (saldo, fk_cliente) VALUES (?, ?)', (-valor_saque, cliente['id_cliente']))
-            except sqlite3.IntegrityError:
-                return jsonify({'status': 'erro', 'mensagem': 'O Banco ainda bloqueia valores negativos.'})
-
-            # 5. Busca o novo saldo na VIEW usando o NOME (que existe na VIEW)
+            # 1. Registra o saldo negativo na tabela contas
+            db.execute('INSERT INTO contas (saldo, fk_cliente) VALUES (?, ?)', (-valor_saque, cliente['id_cliente']))
+            
+            # 2. NOVO: Registra no Histórico
+            db.execute('INSERT INTO historico (id_usuario, tipo, valor) VALUES (?, ?, ?)', 
+                       (cliente['id_cliente'], 'Saque', valor_saque))
+            
             novo = db.execute('SELECT total_saldo FROM vista_saldos_clientes WHERE UPPER(nome) = UPPER(?)', (nome,)).fetchone()
             return jsonify({'status': 'sucesso', 'nome': cliente['nome'], 'novo_saldo': novo['total_saldo']})
-            
     except Exception as e:
         return jsonify({'status': 'erro', 'mensagem': str(e)})
     finally:
@@ -117,6 +117,22 @@ def excluir():
         db.commit()
     db.close()
     return redirect(url_for('index'))
+
+@app.route('/extrato/<nome>')
+def extrato(nome):
+    db = get_db()
+    # Busca o ID do cliente pelo nome
+    cliente = db.execute('SELECT id_cliente FROM clientes WHERE UPPER(nome) = UPPER(?)', (nome,)).fetchone()
+    
+    if cliente:
+        # Busca todas as transações desse cliente na tabela historico
+        transacoes = db.execute('SELECT tipo, valor, data FROM historico WHERE id_usuario = ? ORDER BY data DESC', 
+                                (cliente['id_cliente'],)).fetchall()
+        db.close()
+        return render_template('extrato.html', transacoes=transacoes, nome=nome)
+    
+    db.close()
+    return "Cliente não encontrado", 404
 
 if __name__ == '__main__':
     app.run(debug=True)
